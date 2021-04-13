@@ -1,0 +1,262 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "checkData",
+          "type": "bytes"
+        }
+      ],
+      "name": "checkUpkeep",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "upkeepNeeded",
+          "type": "bool"
+        },
+        {
+          "internalType": "bytes",
+          "name": "performData",
+          "type": "bytes"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "performData",
+          "type": "bytes"
+        }
+      ],
+      "name": "performUpkeep",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "ast": {
+    "absolutePath": "interfaces/KeeperCompatibleInterface.sol",
+    "exportedSymbols": {
+      "KeeperCompatibleInterface": [
+        18
+      ]
+    },
+    "id": 19,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1,
+        "literals": [
+          "solidity",
+          "0.7",
+          ".6"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:22:0"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "id": 18,
+        "linearizedBaseContracts": [
+          18
+        ],
+        "name": "KeeperCompatibleInterface",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "documentation": {
+              "id": 2,
+              "nodeType": "StructuredDocumentation",
+              "src": "98:985:0",
+              "text": " @notice method that is simulated by the keepers to see if any work actually\n needs to be performed. This method does does not actually need to be\n executable, and since it is only ever simulated it can consume lots of gas.\n @dev To ensure that it is never called, you may want to add the\n cannotExecute modifier from KeeperBase to your implementation of this\n method.\n @param checkData specified in the upkeep registration so it is always the\n same for a registered upkeep. This can easily be broken down into specific\n arguments using `abi.decode`, so multiple upkeeps can be registered on the\n same contract and easily differentiated by the contract.\n @return upkeepNeeded boolean to indicate whether the keeper should call\n performUpkeep or not.\n @return performData bytes that the keeper should call performUpkeep with, if\n upkeep is needed. If you would like to encode data to decode later, try\n `abi.encode`."
+            },
+            "functionSelector": "6e04ff0d",
+            "id": 11,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "checkUpkeep",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4,
+                  "mutability": "mutable",
+                  "name": "checkData",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11,
+                  "src": "1112:24:0",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 3,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1112:5:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1106:34:0"
+            },
+            "returnParameters": {
+              "id": 10,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7,
+                  "mutability": "mutable",
+                  "name": "upkeepNeeded",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11,
+                  "src": "1174:17:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 6,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1174:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 9,
+                  "mutability": "mutable",
+                  "name": "performData",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 11,
+                  "src": "1199:24:0",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_memory_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 8,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1199:5:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1166:63:0"
+            },
+            "scope": 18,
+            "src": "1086:144:0",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 12,
+              "nodeType": "StructuredDocumentation",
+              "src": "1234:1003:0",
+              "text": " @notice method that is actually executed by the keepers, via the registry.\n The data returned by the checkUpkeep simulation will be passed into\n this method to actually be executed.\n @dev The input to this method should not be trusted, and the caller of the\n method should not even be restricted to any single registry. Anyone should\n be able call it, and the input should be validated, there is no guarantee\n that the data passed in is the performData returned from checkUpkeep. This\n could happen due to malicious keepers, racing keepers, or simply a state\n change while the performUpkeep transaction is waiting for confirmation.\n Always validate the data passed in.\n @param performData is the data which was passed back from the checkData\n simulation. If it is encoded, it can easily be decoded into other types by\n calling `abi.decode`. This data should not be trusted, and should be\n validated against the contract's current state."
+            },
+            "functionSelector": "4585e33b",
+            "id": 17,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "performUpkeep",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 15,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 14,
+                  "mutability": "mutable",
+                  "name": "performData",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 17,
+                  "src": "2268:26:0",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 13,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2268:5:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2262:36:0"
+            },
+            "returnParameters": {
+              "id": 16,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2307:0:0"
+            },
+            "scope": 18,
+            "src": "2240:68:0",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 19,
+        "src": "57:2253:0"
+      }
+    ],
+    "src": "33:2278:0"
+  },
+  "contractName": "KeeperCompatibleInterface",
+  "dependencies": [],
+  "offset": [
+    57,
+    2310
+  ],
+  "sha1": "7ca911f8d98a926c52384e8fe278b7cd34a1b204",
+  "source": "// SPDX-License-Identifier: MIT\n\npragma solidity 0.7.6;\n\ninterface KeeperCompatibleInterface {\n\n  /**\n   * @notice method that is simulated by the keepers to see if any work actually\n   * needs to be performed. This method does does not actually need to be\n   * executable, and since it is only ever simulated it can consume lots of gas.\n   * @dev To ensure that it is never called, you may want to add the\n   * cannotExecute modifier from KeeperBase to your implementation of this\n   * method.\n   * @param checkData specified in the upkeep registration so it is always the\n   * same for a registered upkeep. This can easily be broken down into specific\n   * arguments using `abi.decode`, so multiple upkeeps can be registered on the\n   * same contract and easily differentiated by the contract.\n   * @return upkeepNeeded boolean to indicate whether the keeper should call\n   * performUpkeep or not.\n   * @return performData bytes that the keeper should call performUpkeep with, if\n   * upkeep is needed. If you would like to encode data to decode later, try\n   * `abi.encode`.\n   */\n  function checkUpkeep(\n    bytes calldata checkData\n  )\n    external\n    returns (\n      bool upkeepNeeded,\n      bytes memory performData\n    );\n\n  /**\n   * @notice method that is actually executed by the keepers, via the registry.\n   * The data returned by the checkUpkeep simulation will be passed into\n   * this method to actually be executed.\n   * @dev The input to this method should not be trusted, and the caller of the\n   * method should not even be restricted to any single registry. Anyone should\n   * be able call it, and the input should be validated, there is no guarantee\n   * that the data passed in is the performData returned from checkUpkeep. This\n   * could happen due to malicious keepers, racing keepers, or simply a state\n   * change while the performUpkeep transaction is waiting for confirmation.\n   * Always validate the data passed in.\n   * @param performData is the data which was passed back from the checkData\n   * simulation. If it is encoded, it can easily be decoded into other types by\n   * calling `abi.decode`. This data should not be trusted, and should be\n   * validated against the contract's current state.\n   */\n  function performUpkeep(\n    bytes calldata performData\n  ) external;\n}\n",
+  "type": "interface"
+}
