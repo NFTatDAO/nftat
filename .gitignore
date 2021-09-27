@@ -1,2 +1,7 @@
+build
+node_modules
+.vscode
+reports
+.notes.md
 .DS*
 .vs*
