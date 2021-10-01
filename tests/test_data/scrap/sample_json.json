@@ -1,0 +1,15 @@
+{
+    "name": "NFTatPixel",
+    "description": "A Pixel for an NFTat",
+    "attributes": [
+        {
+            "trait_type": "xlocation",
+            "value": 0
+        },
+        {
+            "trait_type": "ylocation",
+            "value": 0
+        }
+    ],
+    "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIGhlaWdodD0nOTAwJyB3aWR0aD0nOTAwJyBzdHlsZT0nYmFja2dyb3VuZC1jb2xvcjpibGFjayc+PGNpcmNsZSBjeD0nMCcgY3k9JzAnIHI9JzMwJyBmaWxsPSd3aGl0ZScgLz48L3N2Zz4="
+}

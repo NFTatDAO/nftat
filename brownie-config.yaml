@@ -16,6 +16,7 @@ autofetch_sources: True
 networks:
   default: hardhat
   hardhat:
+    min_staked: 1000000000000000000
     keyhash: '0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4'
     fee: 100000000000000000
     job_id: '29fa9aa13bf1468788b7cc4a500a45b8'
@@ -24,19 +25,22 @@ networks:
     update_interval: 60
     verify: False
   development:
+    min_staked: 1000000000000000000
     keyhash: '0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4'
     fee: 100000000000000000
     job_id: '29fa9aa13bf1468788b7cc4a500a45b8'
+    oracle: '0x2f90A6D021db21e1B2A077c5a37B3C7E75D15b7e'
+    link_token: '0x01be23585060835e02b77ef475b0cc51aa1e0709'
     update_interval: 60
     verify: False
-  kovan:
+  kovan2:
+    min_staked: 1000000000000000000
     vrf_coordinator: '0xdD3782915140c8f3b190B5D67eAc6dc5760C46E9'
     link_token: '0xa36085F69e2889c224210F603D836748e7dC0088'
     keyhash: '0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4'
     fee: 100000000000000000
-    oracle: '0x2f90A6D021db21e1B2A077c5a37B3C7E75D15b7e'
-    jobId: '29fa9aa13bf1468788b7cc4a500a45b8'
-    eth_usd_price_feed: '0x9326BFA02ADD2366b30bacB125260Af641031331'
+    oracle: '0xaa1dc356dc4b18f30c347798fd5379f3d77abc5b'
+    job_id: '83c4709d1bc3425c934dff7bbf43c788'
     # Change to True if you have an Etherscan API key and want to verify
     verify: False
     update_interval: 60
@@ -52,8 +56,20 @@ networks:
     keyhash: '0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311'
     fee: 100000000000000000
     oracle: '0x7AFe1118Ea78C1eae84ca8feE5C65Bc76CcF879e'
-    jobId: '6d1bfe27e7034b1d87b5270556b17277'
     eth_usd_price_feed: '0x8A753747A1Fa494EC906cE90E9f37563A8AF630e'
+    job_id: '29fa9aa13bf1468788b7cc4a500a45b8'
+    min_staked: 1000000000000000000
+    # Change to True if you have an Etherscan API key and want to verify
+    verify: False
+  rinkeby2:
+    vrf_coordinator: '0xb3dCcb4Cf7a26f6cf6B120Cf5A73875B7BBc655B'
+    link_token: '0x01be23585060835e02b77ef475b0cc51aa1e0709'
+    keyhash: '0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311'
+    fee: 100000000000000000
+    oracle: '0x7AFe1118Ea78C1eae84ca8feE5C65Bc76CcF879e'
+    eth_usd_price_feed: '0x8A753747A1Fa494EC906cE90E9f37563A8AF630e'
+    job_id: '29fa9aa13bf1468788b7cc4a500a45b8'
+    min_staked: 1000000000000000000
     # Change to True if you have an Etherscan API key and want to verify
     verify: False
   fuji:

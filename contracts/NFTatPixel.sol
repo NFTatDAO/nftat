@@ -1,21 +1,25 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol"; 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "./library/base64.sol";
 
 
-contract NFTatPixel is ReentrancyGuard, ERC721URIStorage {
+contract NFTatPixel is ReentrancyGuard, ERC721URIStorage, Ownable {
     uint256 public s_tokenCounter;
     mapping(uint256 => Pixel) public s_tokenIdToPixel;
     uint256 public s_pixelInterval;
+    uint256 public s_timeInterval;
+    string public s_grayScaleFilter;
+    mapping(uint256 => uint256) public s_tokenIdToStartTime;
 
-    constructor(uint256 _pixelInterval) ERC721("NFTatPixel", "NFTP") {
+    constructor(uint256 _timeInterval) ERC721("NFTatPixel", "NFTP") {
         s_tokenCounter = 0;
-        s_pixelInterval = _pixelInterval;
-        mintSet();
+        s_pixelInterval = 60;
+        s_timeInterval = _timeInterval;
+        s_grayScaleFilter = "filter='url(#grayscale)' ";
     }
 
     struct Pixel {
@@ -51,31 +55,38 @@ contract NFTatPixel is ReentrancyGuard, ERC721URIStorage {
             _isApprovedOrOwner(_msgSender(), tokenId),
             "ERC721: transfer caller is not owner nor approved"
         );
-        // greyscale is a keyword
+        require(s_tokenIdToStartTime[tokenId] + s_timeInterval >= block.timestamp, "Time's up on changing colors!");
+        // grayscale is a keyword
+        // transparent is a keyword
         s_tokenIdToPixel[tokenId].color = color;
     }
 
-    function mintSet() internal{
+    // right now it's just the nftat.sol that can call this
+    function mintSet(address nftOwner) public onlyOwner {
         // we mint the 2 special tokens, background, and base circle
         uint256 tokenCounter = s_tokenCounter;
         // background
-        Pixel memory backGroundPixel = Pixel(true, false, 0, 0, "greyscale");
-        _safeMint(msg.sender, tokenCounter);
+        Pixel memory backGroundPixel = Pixel(true, false, 0, 0, "grayscale");
+        _safeMint(nftOwner, tokenCounter);
         s_tokenIdToPixel[tokenCounter] = backGroundPixel;
+        s_tokenIdToStartTime[tokenCounter] = block.timestamp;
         tokenCounter = tokenCounter + 1;
+        
         // circle
         Pixel memory circlePixel = Pixel(false, true, 0, 0, "white");
-        _safeMint(msg.sender, tokenCounter);
+        _safeMint(nftOwner, tokenCounter);
         s_tokenIdToPixel[tokenCounter] = circlePixel;
+        s_tokenIdToStartTime[tokenCounter] = block.timestamp;
         tokenCounter = tokenCounter + 1;
 
         // 225 makes it 15 x 15
         uint256 pixelInterval = s_pixelInterval;
         for(uint256 x = 0; x < 15; x++) {
             for(uint256 y = 0; y < 15; y++) {
-                Pixel memory pixel = Pixel(false, false, (x * pixelInterval) + (pixelInterval/2), (y * pixelInterval) + (pixelInterval/2), "white");
-                _safeMint(msg.sender, tokenCounter);
+                Pixel memory pixel = Pixel(false, false, (x * pixelInterval) + (pixelInterval/2), (y * pixelInterval) + (pixelInterval/2), "transparent");
+                _safeMint(nftOwner, tokenCounter);
                 s_tokenIdToPixel[tokenCounter] = pixel;
+                s_tokenIdToStartTime[tokenCounter] = block.timestamp;
                 tokenCounter = tokenCounter + 1;
             }
         }
@@ -84,29 +95,47 @@ contract NFTatPixel is ReentrancyGuard, ERC721URIStorage {
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
-        string memory svg = getSVG(tokenId);
+        // we default all to not grayscale
+        string memory svg = getSVG(tokenId, false);
         string memory imageURI = svgToImageURI(svg);
-        return formatTokenURI(imageURI);
+        return formatTokenURI(imageURI, tokenId);
     }
 
-    function getBaseSVG(uint256 tokenId) public view returns (string memory) {
+    function getBaseSVG(uint256 tokenId, bool isGrayScale) public view returns (string memory) {
         Pixel memory pixel = s_tokenIdToPixel[tokenId];
-        return string(abi.encodePacked("<circle cx='", uint2str((pixel.xlocation * s_pixelInterval) + 30), "' cy='",uint2str((pixel.ylocation * s_pixelInterval) + 30) ,"' r='",uint2str(s_pixelInterval) ,"' fill='",pixel.color ,"' />"));
+        string memory filter = "";
+        string memory fill = string(abi.encodePacked("' fill='", pixel.color, "' "));
+        if (isGrayScale) {
+            filter = s_grayScaleFilter;
+        }
+        if (compareStrings(pixel.color, "transparent")) {
+            fill = "style='fill-opacity: 0' ";
+        }
+        return string(abi.encodePacked("<circle ", filter, " cx='", uint2str(pixel.xlocation), "' cy='",uint2str(pixel.ylocation) ,"' r='",uint2str(s_pixelInterval / 2) ,"' fill='",pixel.color ,"' />"));
     }
 
-    function getBigCircleSVG(uint256 tokenId) public view returns (string memory) {
+    function getBigCircleSVG(uint256 tokenId, bool isGrayScale) public view returns (string memory) {
         Pixel memory pixel = s_tokenIdToPixel[tokenId];
-        return string(abi.encodePacked("<circle cx='450' cy='450' r='450' fill='", pixel.color ,"' />"));
+        string memory filter = "";
+        if (isGrayScale) {
+            filter = s_grayScaleFilter;
+        }
+        return string(abi.encodePacked("<circle ", filter ," cx='450' cy='450' r='450' fill='", pixel.color ,"' />"));
     }
 
-    function getSVG(uint256 tokenId) public view returns (string memory) {
+    function getSVG(uint256 tokenId, bool isGrayScale) public view returns (string memory) {
         string memory base = "<svg xmlns='http://www.w3.org/2000/svg' height='900' width='900' style='background-color:black'>";
         Pixel memory pixel = s_tokenIdToPixel[tokenId];
-        string memory baseSvg = getBaseSVG(tokenId);
+        string memory baseSvg = "";
+        if (pixel.isBaseCircle) {
+            baseSvg = getBigCircleSVG(tokenId, isGrayScale);
+        } else {
+            baseSvg = getBaseSVG(tokenId, false);
+        }
         return string(abi.encodePacked(base, baseSvg, "</svg>"));
     }
 
-    function formatTokenURI(string memory imageURI) public pure returns (string memory) {
+    function formatTokenURI(string memory imageURI, uint256 tokenId) public view returns (string memory) {
         return string(
                 abi.encodePacked(
                     "data:application/json;base64,",
@@ -114,8 +143,8 @@ contract NFTatPixel is ReentrancyGuard, ERC721URIStorage {
                         bytes(
                             abi.encodePacked(
                                 '{"name":"',
-                                "NFTatPixel", // You can add whatever name here
-                                '", "description":"A Pixel for an NFTat", "image":"',imageURI,'"}'
+                                uint2str(s_tokenIdToPixel[tokenId].xlocation), ', ', uint2str(s_tokenIdToPixel[tokenId].ylocation),  // You can add whatever name here
+                                '", "description":"A Pixel for an NFTat", "attributes": [{"trait_type": "xlocation", "value": ', uint2str(s_tokenIdToPixel[tokenId].xlocation),'}, {"trait_type": "ylocation", "value": ',uint2str(s_tokenIdToPixel[tokenId].ylocation),'}], "image":"',imageURI,'"}'
                             )
                         )
                     )
@@ -155,5 +184,8 @@ contract NFTatPixel is ReentrancyGuard, ERC721URIStorage {
         return string(bstr);
     }
 
+    function compareStrings(string memory a, string memory b) public pure returns (bool) {
+        return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
+    }
 
 }

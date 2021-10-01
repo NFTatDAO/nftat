@@ -5,3 +5,5 @@ reports
 .notes.md
 .DS*
 .vs*
+.pytest_cache
+
