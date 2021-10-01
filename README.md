@@ -79,3 +79,5 @@ You can also change your color through the UI.
 brownie test
 ```
 
+Thanks to (TheLinkMarines)[https://twitter.com/TheLinkMarines] for the logo!!
+
