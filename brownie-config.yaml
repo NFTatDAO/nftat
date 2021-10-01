@@ -16,6 +16,9 @@ autofetch_sources: True
 
 networks:
   default: hardhat
+  polygon:
+    nftat: '0x65F055444125f8764a8405404c898Edc0399F703'
+    nftat_pixel: '0x31456C10e5ED5B1649dC20D956C2703925E6CB4e'
   hardhat:
     min_staked: 1000000000000000000
     keyhash: '0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4'
