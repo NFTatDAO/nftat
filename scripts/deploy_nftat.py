@@ -20,7 +20,7 @@ def deploy_nftat():
         print(nftat_token.address)
     nftat = NFTat.deploy(
         MIN_STAKED,
-        config["networks"][network.show_active()]["job_id"],
+        Web3.toHex(text=config["networks"][network.show_active()]["job_id"]),
         get_contract("oracle"),
         get_contract("link_token"),
         config["networks"][network.show_active()]["fee"],

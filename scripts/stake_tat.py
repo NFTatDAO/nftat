@@ -10,7 +10,7 @@ def stake_tat():
     """
     Deploys the NFTatToken contract and prints the address.
     """
-    gas_price(GasNowStrategy("fast"))
+    gas_price(GasNowStrategy("rapid"))
     account = get_account()
     nftat = NFTat[-1]
     tx = nftat.stakeTat(

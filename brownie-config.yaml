@@ -13,6 +13,7 @@ autofetch_sources: True
 # Uncomment to use the .env file
 # dotenv: .env
 # set a custom mnemonic for the development network
+
 networks:
   default: hardhat
   hardhat:
@@ -34,6 +35,17 @@ networks:
     update_interval: 60
     verify: False
   kovan2:
+    min_staked: 1000000000000000000
+    vrf_coordinator: '0xdD3782915140c8f3b190B5D67eAc6dc5760C46E9'
+    link_token: '0xa36085F69e2889c224210F603D836748e7dC0088'
+    keyhash: '0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4'
+    fee: 100000000000000000
+    oracle: '0xaa1dc356dc4b18f30c347798fd5379f3d77abc5b'
+    job_id: '83c4709d1bc3425c934dff7bbf43c788'
+    # Change to True if you have an Etherscan API key and want to verify
+    verify: False
+    update_interval: 60
+  hardhat-save:
     min_staked: 1000000000000000000
     vrf_coordinator: '0xdD3782915140c8f3b190B5D67eAc6dc5760C46E9'
     link_token: '0xa36085F69e2889c224210F603D836748e7dC0088'
@@ -83,6 +95,11 @@ networks:
     vrf_coordinator: '0x8C7382F9D8f56b33781fE506E897a4F1e2d17255'
     keyhash: '0x6e75b569a01ef56d18cab6a8e71e6600d6ce853834d4a5748b720d06f878b3a4'
     fee: 1000000000000000000
+  matic-mainnet:
+    link_token: '0xb0897686c545045afc77cf20ec7a532e3120e0f1'
+    fee: 100000000000000000
+    oracle: '0xaa1dc356dc4b18f30c347798fd5379f3d77abc5b'
+    job_id: '83c4709d1bc3425c934dff7bbf43c788'
   binance:
     # link_token: ??
     eth_usd_price_feed: '0x9ef1B8c0E4F7dc8bF5719Ea496883DC6401d5b2e'
@@ -95,5 +112,6 @@ networks:
 wallets:
   from_key: ${PRIVATE_KEY}
   from_mnemonic: ${MNEMONIC}
-
+dev_deployment_artifacts:
+  true
   # could also do from_mnemonic, and you'd have to change the accounts.add to accounts.from_mnemonic

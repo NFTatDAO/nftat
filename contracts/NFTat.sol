@@ -81,7 +81,7 @@ contract NFTat is ReentrancyGuard, Ownable, ChainlinkClient, ERC721URIStorage {
     }
 
     function updateVotes(uint256 tattoodPersonId) public onlyOwner returns (bytes32 requestId) {
-        require(s_tokenIdToTattoodPerson[tattoodPersonId].tattood != false, "This person has already been tattood!");
+        require(s_tokenIdToTattoodPerson[tattoodPersonId].tattood == false, "This person has already been tattood!");
         Chainlink.Request memory request = buildChainlinkRequest(s_subjectiveOracleJobId, address(this), this.fulfill.selector);
         sendChainlinkRequestTo(s_subjectiveOracleAddress, request, s_subjectiveOracleFee);
         requestIdToTattoodPersonId[requestId] = tattoodPersonId;
@@ -97,9 +97,31 @@ contract NFTat is ReentrancyGuard, Ownable, ChainlinkClient, ERC721URIStorage {
         require(success, "You don't have enough ether to pay the fee!");
     }
 
+    function fakeFulfill(bool _tattoodStatus, uint256 tattoodPersonId) public onlyOwner{
+        // Just in case... polygon keeps causing me issues. 
+        require(_tattoodStatus, "The person was not tattood!");
+        address tattoodPerson = s_tokenIdToTattoodPerson[tattoodPersonId].addressOfTattoodPerson;
+        s_tokenIdToTattoodPerson[tattoodPersonId].tattood = _tattoodStatus;
+        uint256 returnStakedAmount = s_tokenIdToTattoodPerson[tattoodPersonId].stakedAmount;
+        (bool success, ) = payable(tattoodPerson).call{value: returnStakedAmount}("");
+        require(success, "You don't have enough ether to pay the fee!");
+    }
+
+    function withdraw(uint256 tattoodPersonId) public onlyOwner {
+        // this is just in case I fuck up
+        address tattoodPerson = s_tokenIdToTattoodPerson[tattoodPersonId].addressOfTattoodPerson;
+        uint256 returnStakedAmount = s_tokenIdToTattoodPerson[tattoodPersonId].stakedAmount;
+        (bool success, ) = payable(tattoodPerson).call{value: returnStakedAmount}("");
+    }
+
+    function withdrawLink() public onlyOwner {
+        LinkTokenInterface link = LinkTokenInterface(chainlinkTokenAddress());
+        require(link.transfer(msg.sender, link.balanceOf(address(this))), "Unable to transfer");
+    }
+
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         // 0th pixel is background
-        // 1st pixel is circle
+        // 1st pixel is circle`
         // the next 225 are the pixels
         string memory svg = getSVG(tokenId);
         if (!s_tokenIdToTattoodPerson[tokenId].tattood){
