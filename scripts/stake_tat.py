@@ -1,4 +1,4 @@
-from brownie import NFTatToken, NFTat, config, network
+from brownie import NFTatToken, NFTat, config, network, NFTatPixel, Contract
 from scripts.helpful_scripts import get_account, get_contract
 from brownie.network.gas.strategies import GasNowStrategy
 from brownie.network import gas_price
@@ -16,12 +16,32 @@ def stake_tat():
     tx = nftat.stakeTat(
         {
             "from": account,
-            "value": 1000500000000000000,
-            "gas_price": GasNowStrategy("fast"),
+            "value": MIN_STAKED,
         }
     )
     tx.wait(1)
-    print("NFTat Deployed!")
+    nftat.batchOne(
+        {
+            "from": account,
+        },
+    )
+    nftat.batchTwo(
+        {
+            "from": account,
+        },
+    )
+    nftat.batchThree(
+        {
+            "from": account,
+        },
+    )
+    tx = nftat.batchFour(
+        {
+            "from": account,
+        },
+    )
+    tx.wait(1)
+    print(nftat.s_pixelsContract())
     return nftat
 
 

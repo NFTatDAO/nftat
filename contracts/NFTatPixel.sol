@@ -78,10 +78,14 @@ contract NFTatPixel is ReentrancyGuard, ERC721URIStorage, Ownable {
         s_tokenIdToPixel[tokenCounter] = circlePixel;
         s_tokenIdToStartTime[tokenCounter] = block.timestamp;
         tokenCounter = tokenCounter + 1;
+        s_tokenCounter = tokenCounter;
+    }
 
-        // 225 makes it 15 x 15
+    function mintBatchOne(address nftOwner) public onlyOwner {
+        uint256 tokenCounter = s_tokenCounter;
+        // // 225 makes it 15 x 15
         uint256 pixelInterval = s_pixelInterval;
-        for(uint256 x = 0; x < 15; x++) {
+        for(uint256 x = 0; x < 4; x++) {
             for(uint256 y = 0; y < 15; y++) {
                 Pixel memory pixel = Pixel(false, false, (x * pixelInterval) + (pixelInterval/2), (y * pixelInterval) + (pixelInterval/2), "transparent");
                 _safeMint(nftOwner, tokenCounter);
@@ -90,7 +94,55 @@ contract NFTatPixel is ReentrancyGuard, ERC721URIStorage, Ownable {
                 tokenCounter = tokenCounter + 1;
             }
         }
-        s_tokenCounter = s_tokenCounter + (15 * 15) + 2;
+        s_tokenCounter = tokenCounter;
+    }
+
+    function mintBatchTwo(address nftOwner) public onlyOwner {
+        uint256 tokenCounter = s_tokenCounter;
+        // // 225 makes it 15 x 15
+        uint256 pixelInterval = s_pixelInterval;
+        for(uint256 x = 4; x < 8; x++) {
+            for(uint256 y = 0; y < 15; y++) {
+                Pixel memory pixel = Pixel(false, false, (x * pixelInterval) + (pixelInterval/2), (y * pixelInterval) + (pixelInterval/2), "transparent");
+                _safeMint(nftOwner, tokenCounter);
+                s_tokenIdToPixel[tokenCounter] = pixel;
+                s_tokenIdToStartTime[tokenCounter] = block.timestamp;
+                tokenCounter = tokenCounter + 1;
+            }
+        }
+        s_tokenCounter = tokenCounter;
+    }
+
+    function mintBatchThree(address nftOwner) public onlyOwner {
+        uint256 tokenCounter = s_tokenCounter;
+        // // 225 makes it 15 x 15
+        uint256 pixelInterval = s_pixelInterval;
+        for(uint256 x = 8; x < 12; x++) {
+            for(uint256 y = 0; y < 15; y++) {
+                Pixel memory pixel = Pixel(false, false, (x * pixelInterval) + (pixelInterval/2), (y * pixelInterval) + (pixelInterval/2), "transparent");
+                _safeMint(nftOwner, tokenCounter);
+                s_tokenIdToPixel[tokenCounter] = pixel;
+                s_tokenIdToStartTime[tokenCounter] = block.timestamp;
+                tokenCounter = tokenCounter + 1;
+            }
+        }
+        s_tokenCounter = tokenCounter;
+    }
+
+    function mintBatchFour(address nftOwner) public onlyOwner {
+        uint256 tokenCounter = s_tokenCounter;
+        // // 225 makes it 15 x 15
+        uint256 pixelInterval = s_pixelInterval;
+        for(uint256 x = 12; x < 15; x++) {
+            for(uint256 y = 0; y < 15; y++) {
+                Pixel memory pixel = Pixel(false, false, (x * pixelInterval) + (pixelInterval/2), (y * pixelInterval) + (pixelInterval/2), "transparent");
+                _safeMint(nftOwner, tokenCounter);
+                s_tokenIdToPixel[tokenCounter] = pixel;
+                s_tokenIdToStartTime[tokenCounter] = block.timestamp;
+                tokenCounter = tokenCounter + 1;
+            }
+        }
+        s_tokenCounter = tokenCounter;
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {

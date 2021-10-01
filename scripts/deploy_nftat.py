@@ -13,7 +13,7 @@ def deploy_nftat():
     """
     Deploys the NFTatToken contract and prints the address.
     """
-    gas_price(GasNowStrategy("rapid"))
+    gas_price(GasNowStrategy("fast"))
     account = get_account()
     if len(NFTatToken) == 0:
         nftat_token = NFTatToken.deploy(INIT_SUPPLY, {"from": account})

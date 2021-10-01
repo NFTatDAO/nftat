@@ -5,6 +5,7 @@ from scripts.helpful_scripts import (
     get_account,
 )
 from scripts.deploy_nftat import deploy_nftat
+from scripts.stake_tat import stake_tat
 from tests.test_data.test_data import (
     default_token_uri,
     big_svg,
@@ -16,42 +17,26 @@ from tests.test_data.test_data import (
 
 def test_only_patrick_can_stake():
     account = get_account()
-    bad_account = get_account(index=1)
+    # bad_account = get_account(index=1)
 
     nftat = deploy_nftat()
-    tx = nftat.stakeTat(
-        {
-            "from": account,
-            "value": config["networks"][network.show_active()]["min_staked"],
-            "gas_price": GasNowStrategy("fast"),
-        },
-    )
-    tx.wait(1)
-    assert tx is not None
-    with pytest.raises(exceptions.VirtualMachineError):
-        nftat.stakeTat(
-            {
-                "from": bad_account,
-                "value": config["networks"][network.show_active()]["min_staked"],
-            },
-        )
+    stake_tat()
+    # with pytest.raises(exceptions.VirtualMachineError):
+    #     nftat.stakeTat(
+    #         {
+    #             "from": bad_account,
+    #             "value": config["networks"][network.show_active()]["min_staked"],
+    #         },
+    #     )
     return nftat
 
 
-def test_anyone_can_after_patrick_sets():
-    account = get_account()
-    bad_account = get_account(index=1)
-    nftat = test_only_patrick_can_stake()
-    nftat.setOpen(True, {"from": account})
-    tx = nftat.stakeTat(
-        {
-            "from": bad_account,
-            "value": config["networks"][network.show_active()]["min_staked"],
-            "gas_price": GasNowStrategy("fast"),
-        },
-    )
-    tx.wait(1)
-    assert tx is not None
+# def test_anyone_can_after_patrick_sets():
+#     account = get_account()
+#     nftat = test_only_patrick_can_stake()
+#     nftat.setOpen(True, {"from": account})
+#     stake_tat()
+#     assert tx is not None
 
 
 def test_initial_token_uri():

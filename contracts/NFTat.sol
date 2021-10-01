@@ -37,7 +37,7 @@ contract NFTat is ReentrancyGuard, Ownable, ChainlinkClient, ERC721URIStorage {
         } else {
             setChainlinkToken(_link);
         }
-        s_timeInterval = 10 days;
+        s_timeInterval = 12 days;
         s_minimumStaked = _minStaked;
         s_subjectiveOracleJobId = _subjectiveOracleJobId;
         s_subjectiveOracleAddress = _subjectiveOracleAddress;
@@ -56,7 +56,7 @@ contract NFTat is ReentrancyGuard, Ownable, ChainlinkClient, ERC721URIStorage {
     /** @notice Create Tatoo Staker
      */ 
     function stakeTat() 
-    nonReentrant public payable {
+    nonReentrant onlyOwner public payable {
         require(msg.sender == owner() || isOpen, "Still in beta, sorry!");
         require(msg.value >= s_minimumStaked, "You didn't send enough ether to stake!");
         TattoodPerson memory newTatoodPerson = TattoodPerson(msg.value, false, msg.sender);
@@ -65,6 +65,19 @@ contract NFTat is ReentrancyGuard, Ownable, ChainlinkClient, ERC721URIStorage {
         _safeMint(msg.sender, s_nftCounter);
         // update the counter
         s_nftCounter = s_nftCounter + 1;
+    }
+
+    function batchOne() public onlyOwner {
+        s_pixelsContract.mintBatchOne(msg.sender);
+    }
+    function batchTwo() public onlyOwner {
+        s_pixelsContract.mintBatchTwo(msg.sender);
+    }
+    function batchThree() public onlyOwner {
+        s_pixelsContract.mintBatchThree(msg.sender);
+    }
+    function batchFour() public onlyOwner {
+        s_pixelsContract.mintBatchFour(msg.sender);
     }
 
     function updateVotes(uint256 tattoodPersonId) public onlyOwner returns (bytes32 requestId) {
